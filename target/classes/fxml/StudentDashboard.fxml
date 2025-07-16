@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Text?>
+
+<VBox spacing="20" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.university.controller.StudentDashboardController"
+      stylesheets="@../styles/styles.css">
+    
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <Text styleClass="dashboard-title" text="Student Dashboard"/>
+
+    <TabPane VBox.vgrow="ALWAYS">
+        <!-- New Complaint Tab -->
+        <Tab text="Submit New Complaint" closable="false">
+            <VBox spacing="15" styleClass="form-container">
+                <Label text="Submit a New Complaint" styleClass="section-header"/>
+                
+                <ComboBox fx:id="categoryComboBox" promptText="Select Category"/>
+                
+                <TextField fx:id="subjectField" promptText="Subject"/>
+                
+                <TextArea fx:id="descriptionArea" promptText="Describe your complaint in detail..."
+                          wrapText="true" prefRowCount="4"/>
+                
+                <VBox spacing="10">
+                    <Label text="Upload Image (Optional)"/>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Button text="Choose Image" onAction="#handleImageUpload"/>
+                        <Label fx:id="imageLabel" text="No image uploaded"/>
+                    </HBox>
+                    <ImageView fx:id="imagePreview" fitHeight="200" fitWidth="200" 
+                              preserveRatio="true"/>
+                </VBox>
+                
+                <HBox spacing="10" alignment="CENTER_RIGHT">
+                    <Label fx:id="messageLabel"/>
+                    <Button fx:id="submitButton" text="Submit Complaint" 
+                            onAction="#handleSubmitComplaint" styleClass="primary-button"/>
+                </HBox>
+            </VBox>
+        </Tab>
+
+        <!-- My Complaints Tab -->
+        <Tab text="My Complaints" closable="false">
+            <VBox spacing="10">
+                <Label text="My Complaints History" styleClass="section-header"/>
+                <TableView fx:id="myComplaintsTable" VBox.vgrow="ALWAYS"/>
+            </VBox>
+        </Tab>
+    </TabPane>
+</VBox> 

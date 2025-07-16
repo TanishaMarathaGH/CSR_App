@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Text?>
+
+<VBox spacing="20" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.university.controller.AdminDashboardController"
+      stylesheets="@../styles/styles.css">
+    
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <HBox alignment="CENTER_LEFT" spacing="20">
+        <Text styleClass="dashboard-title" text="Admin Dashboard"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <ComboBox fx:id="statusFilter" promptText="Filter by Status"/>
+    </HBox>
+
+    <HBox spacing="20" VBox.vgrow="ALWAYS">
+        <!-- Left side: Complaints Table -->
+        <VBox spacing="10" HBox.hgrow="ALWAYS">
+            <Label text="Complaints" styleClass="section-header"/>
+            <TableView fx:id="complaintsTable" VBox.vgrow="ALWAYS"/>
+            <Label fx:id="totalComplaintsLabel" text="Total Complaints: 0"/>
+        </VBox>
+
+        <!-- Right side: Charts -->
+        <VBox spacing="20" minWidth="400">
+            <Label text="Analytics" styleClass="section-header"/>
+            
+            <!-- Department-wise complaints chart -->
+            <VBox styleClass="chart-container">
+                <Label text="Complaints by Department" styleClass="chart-title"/>
+                <BarChart fx:id="complaintsByDepartmentChart">
+                    <xAxis>
+                        <CategoryAxis label="Department"/>
+                    </xAxis>
+                    <yAxis>
+                        <NumberAxis label="Number of Complaints"/>
+                    </yAxis>
+                </BarChart>
+            </VBox>
+
+            <!-- Status distribution chart -->
+            <VBox styleClass="chart-container">
+                <Label text="Status Distribution" styleClass="chart-title"/>
+                <PieChart fx:id="statusDistributionChart"/>
+            </VBox>
+        </VBox>
+    </HBox>
+</VBox> 
