@@ -1,12 +1,12 @@
-D:\Study Material\MCA MLSU\2nd Sem\Java\Project\CSR_App\src\main\java\com\university\Main.java
-D:\Study Material\MCA MLSU\2nd Sem\Java\Project\CSR_App\src\main\java\com\university\util\EmailSender.java
-D:\Study Material\MCA MLSU\2nd Sem\Java\Project\CSR_App\src\main\java\com\university\config\DatabaseConfig.java
-D:\Study Material\MCA MLSU\2nd Sem\Java\Project\CSR_App\src\main\java\com\university\dao\ComplaintDAO.java
-D:\Study Material\MCA MLSU\2nd Sem\Java\Project\CSR_App\src\main\java\com\university\controller\AdminDashboardController.java
-D:\Study Material\MCA MLSU\2nd Sem\Java\Project\CSR_App\src\main\java\com\university\util\ImageHandler.java
-D:\Study Material\MCA MLSU\2nd Sem\Java\Project\CSR_App\src\main\java\com\university\controller\StudentDashboardController.java
-D:\Study Material\MCA MLSU\2nd Sem\Java\Project\CSR_App\src\main\java\com\university\controller\RegisterController.java
-D:\Study Material\MCA MLSU\2nd Sem\Java\Project\CSR_App\src\main\java\com\university\model\Complaint.java
-D:\Study Material\MCA MLSU\2nd Sem\Java\Project\CSR_App\src\main\java\com\university\controller\LoginController.java
-D:\Study Material\MCA MLSU\2nd Sem\Java\Project\CSR_App\src\main\java\com\university\dao\UserDAO.java
-D:\Study Material\MCA MLSU\2nd Sem\Java\Project\CSR_App\src\main\java\com\university\model\User.java
+D:\Study Material\MCA MLSU\2nd Sem\Java Project\Project\CSR_App\src\main\java\com\university\controller\RegisterController.java
+D:\Study Material\MCA MLSU\2nd Sem\Java Project\Project\CSR_App\src\main\java\com\university\dao\UserDAO.java
+D:\Study Material\MCA MLSU\2nd Sem\Java Project\Project\CSR_App\src\main\java\com\university\model\User.java
+D:\Study Material\MCA MLSU\2nd Sem\Java Project\Project\CSR_App\src\main\java\com\university\config\DatabaseConfig.java
+D:\Study Material\MCA MLSU\2nd Sem\Java Project\Project\CSR_App\src\main\java\com\university\controller\StudentDashboardController.java
+D:\Study Material\MCA MLSU\2nd Sem\Java Project\Project\CSR_App\src\main\java\com\university\controller\LoginController.java
+D:\Study Material\MCA MLSU\2nd Sem\Java Project\Project\CSR_App\src\main\java\com\university\Main.java
+D:\Study Material\MCA MLSU\2nd Sem\Java Project\Project\CSR_App\src\main\java\com\university\util\EmailSender.java
+D:\Study Material\MCA MLSU\2nd Sem\Java Project\Project\CSR_App\src\main\java\com\university\util\ImageHandler.java
+D:\Study Material\MCA MLSU\2nd Sem\Java Project\Project\CSR_App\src\main\java\com\university\dao\ComplaintDAO.java
+D:\Study Material\MCA MLSU\2nd Sem\Java Project\Project\CSR_App\src\main\java\com\university\model\Complaint.java
+D:\Study Material\MCA MLSU\2nd Sem\Java Project\Project\CSR_App\src\main\java\com\university\controller\AdminDashboardController.java

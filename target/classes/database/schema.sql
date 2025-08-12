@@ -2,6 +2,11 @@
 CREATE DATABASE IF NOT EXISTS campus_service_request;
 USE campus_service_request;
 
+DROP TABLE IF EXISTS notifications;
+DROP TABLE IF EXISTS complaint_comments;
+DROP TABLE IF EXISTS complaints;
+DROP TABLE IF EXISTS users;
+
 -- Create users table
 CREATE TABLE IF NOT EXISTS users (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -23,7 +28,7 @@ CREATE TABLE IF NOT EXISTS complaints (
     description TEXT NOT NULL,
     image_path VARCHAR(255),
     status ENUM('PENDING', 'IN_PROGRESS', 'RESOLVED', 'REJECTED') DEFAULT 'PENDING',
-    priority ENUM('LOW', 'MEDIUM', 'HIGH') DEFAULT 'MEDIUM',
+    priority ENUM('LOW', 'MEDIUM', 'HIGH', 'URGENT') DEFAULT 'MEDIUM',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     resolved_at TIMESTAMP NULL,

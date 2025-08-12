@@ -14,7 +14,12 @@
         <Insets top="20" right="20" bottom="20" left="20"/>
     </padding>
 
-    <Text styleClass="dashboard-title" text="Student Dashboard"/>
+    <!-- Header -->
+    <HBox alignment="CENTER_LEFT" spacing="20">
+        <Label fx:id="welcomeLabel" styleClass="welcome-label"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button fx:id="logoutButton" text="Logout" onAction="#handleLogout"/>
+    </HBox>
 
     <TabPane VBox.vgrow="ALWAYS">
         <!-- New Complaint Tab -->
@@ -23,6 +28,7 @@
                 <Label text="Submit a New Complaint" styleClass="section-header"/>
                 
                 <ComboBox fx:id="categoryComboBox" promptText="Select Category"/>
+                <ComboBox fx:id="priorityComboBox" promptText="Select Priority"/>
                 
                 <TextField fx:id="subjectField" promptText="Subject"/>
                 
@@ -51,6 +57,13 @@
         <Tab text="My Complaints" closable="false">
             <VBox spacing="10">
                 <Label text="My Complaints History" styleClass="section-header"/>
+                
+                <!-- Filters -->
+                <HBox spacing="10" styleClass="filter-box">
+                    <ComboBox fx:id="filterStatusComboBox" promptText="Filter by Status"/>
+                    <TextField fx:id="ticketNumberField" promptText="Search by Ticket #" HBox.hgrow="ALWAYS"/>
+                </HBox>
+                
                 <TableView fx:id="myComplaintsTable" VBox.vgrow="ALWAYS"/>
             </VBox>
         </Tab>

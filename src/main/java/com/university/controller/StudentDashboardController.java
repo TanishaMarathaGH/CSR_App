@@ -5,11 +5,16 @@ import com.university.model.Complaint;
 import com.university.model.User;
 import com.university.util.ImageHandler;
 import javafx.collections.FXCollections;
+import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import java.io.File;
 import java.sql.SQLException;
@@ -18,16 +23,22 @@ import java.util.List;
 public class StudentDashboardController {
     @FXML private TableView<Complaint> myComplaintsTable;
     @FXML private ComboBox<String> categoryComboBox;
+    @FXML private ComboBox<String> filterStatusComboBox;
     @FXML private TextField subjectField;
     @FXML private TextArea descriptionArea;
     @FXML private ImageView imagePreview;
     @FXML private Label imageLabel;
     @FXML private Button submitButton;
+    @FXML private Button logoutButton;
     @FXML private Label messageLabel;
+    @FXML private Label welcomeLabel;
+    @FXML private TextField ticketNumberField;
+    @FXML private ComboBox<Complaint.Priority> priorityComboBox;
 
     private User currentUser;
     private ComplaintDAO complaintDAO = new ComplaintDAO();
     private String uploadedImagePath;
+    private FilteredList<Complaint> filteredComplaints;
 
     @FXML
     public void initialize() {
@@ -35,17 +46,34 @@ public class StudentDashboardController {
         categoryComboBox.setItems(FXCollections.observableArrayList(
             "Computer Lab", "Library", "Internet", "Electrical", "Plumbing", "Classroom", "Other"
         ));
+
+        // Initialize priority dropdown
+        priorityComboBox.setItems(FXCollections.observableArrayList(
+            Complaint.Priority.values()
+        ));
+
+        // Initialize status filter
+        filterStatusComboBox.setItems(FXCollections.observableArrayList(
+            "All", "PENDING", "IN_PROGRESS", "RESOLVED", "REJECTED"
+        ));
+        filterStatusComboBox.setValue("All");
+        filterStatusComboBox.setOnAction(e -> applyFilters());
+
+        // Style the components
+        submitButton.getStyleClass().add("primary-button");
+        logoutButton.getStyleClass().add("secondary-button");
     }
 
     public void initData(User user) {
         this.currentUser = user;
+        welcomeLabel.setText("Welcome, " + user.getFullName());
         initializeUI();
         loadMyComplaints();
     }
 
     private void initializeUI() {
         // Initialize table columns
-        TableColumn<Complaint, String> idCol = new TableColumn<>("ID");
+        TableColumn<Complaint, String> idCol = new TableColumn<>("Ticket #");
         idCol.setCellValueFactory(data -> 
             new javafx.beans.property.SimpleStringProperty(String.valueOf(data.getValue().getComplaintId())));
 
@@ -57,6 +85,10 @@ public class StudentDashboardController {
         subjectCol.setCellValueFactory(data -> 
             new javafx.beans.property.SimpleStringProperty(data.getValue().getSubject()));
 
+        TableColumn<Complaint, String> priorityCol = new TableColumn<>("Priority");
+        priorityCol.setCellValueFactory(data -> 
+            new javafx.beans.property.SimpleStringProperty(data.getValue().getPriority().toString()));
+
         TableColumn<Complaint, String> statusCol = new TableColumn<>("Status");
         statusCol.setCellValueFactory(data -> 
             new javafx.beans.property.SimpleStringProperty(data.getValue().getStatus().toString()));
@@ -66,6 +98,7 @@ public class StudentDashboardController {
             private final Button viewButton = new Button("View");
             {
                 viewButton.setOnAction(e -> handleViewComplaint(getTableView().getItems().get(getIndex())));
+                viewButton.getStyleClass().add("action-button");
             }
 
             @Override
@@ -75,7 +108,19 @@ public class StudentDashboardController {
             }
         });
 
-        myComplaintsTable.getColumns().addAll(idCol, categoryCol, subjectCol, statusCol, actionCol);
+        myComplaintsTable.getColumns().addAll(idCol, categoryCol, subjectCol, priorityCol, statusCol, actionCol);
+    }
+
+    @FXML
+    private void handleLogout() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Login.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) logoutButton.getScene().getWindow();
+            stage.setScene(new Scene(root));
+        } catch (Exception e) {
+            showError("Error during logout: " + e.getMessage());
+        }
     }
 
     @FXML
@@ -111,25 +156,35 @@ public class StudentDashboardController {
                 descriptionArea.getText().trim()
             );
             complaint.setImagePath(uploadedImagePath);
+            complaint.setPriority(priorityComboBox.getValue());
+            complaint.setTicketNumber(generateTicketNumber());
             
             complaintDAO.createComplaint(complaint);
             
             // Clear form
-            categoryComboBox.setValue(null);
-            subjectField.clear();
-            descriptionArea.clear();
-            imagePreview.setImage(null);
-            uploadedImagePath = null;
-            imageLabel.setText("No image uploaded");
+            clearForm();
             
             // Show success message and reload complaints
-            messageLabel.setText("Complaint submitted successfully!");
-            messageLabel.setStyle("-fx-text-fill: green;");
+            showSuccess("Complaint submitted successfully! Ticket #" + complaint.getTicketNumber());
             loadMyComplaints();
             
         } catch (SQLException e) {
             showError("Error submitting complaint: " + e.getMessage());
         }
+    }
+
+    private void clearForm() {
+        categoryComboBox.setValue(null);
+        subjectField.clear();
+        descriptionArea.clear();
+        imagePreview.setImage(null);
+        uploadedImagePath = null;
+        imageLabel.setText("No image uploaded");
+        priorityComboBox.setValue(null);
+    }
+
+    private String generateTicketNumber() {
+        return String.format("TKT-%d-%d", currentUser.getUserId(), System.currentTimeMillis() % 10000);
     }
 
     private boolean validateForm() {
@@ -147,6 +202,11 @@ public class StudentDashboardController {
             showError("Please enter a description");
             return false;
         }
+
+        if (priorityComboBox.getValue() == null) {
+            showError("Please select a priority level");
+            return false;
+        }
         
         return true;
     }
@@ -154,22 +214,35 @@ public class StudentDashboardController {
     private void loadMyComplaints() {
         try {
             List<Complaint> complaints = complaintDAO.getComplaintsByUserId(currentUser.getUserId());
-            myComplaintsTable.setItems(FXCollections.observableArrayList(complaints));
+            filteredComplaints = new FilteredList<>(FXCollections.observableArrayList(complaints));
+            myComplaintsTable.setItems(filteredComplaints);
+            applyFilters();
         } catch (SQLException e) {
             showError("Error loading complaints: " + e.getMessage());
         }
     }
 
+    private void applyFilters() {
+        String statusFilter = filterStatusComboBox.getValue();
+        filteredComplaints.setPredicate(complaint -> {
+            if ("All".equals(statusFilter)) {
+                return true;
+            }
+            return complaint.getStatus().toString().equals(statusFilter);
+        });
+    }
+
     private void handleViewComplaint(Complaint complaint) {
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setTitle("Complaint Details");
-        dialog.setHeaderText("Complaint #" + complaint.getComplaintId());
+        dialog.setHeaderText("Ticket #" + complaint.getTicketNumber());
         
         VBox content = new VBox(10);
         content.getChildren().addAll(
             new Label("Category: " + complaint.getCategory()),
             new Label("Subject: " + complaint.getSubject()),
             new Label("Description: " + complaint.getDescription()),
+            new Label("Priority: " + complaint.getPriority()),
             new Label("Status: " + complaint.getStatus())
         );
         
@@ -195,5 +268,10 @@ public class StudentDashboardController {
     private void showError(String message) {
         messageLabel.setText(message);
         messageLabel.setStyle("-fx-text-fill: red;");
+    }
+
+    private void showSuccess(String message) {
+        messageLabel.setText(message);
+        messageLabel.setStyle("-fx-text-fill: green;");
     }
 } 

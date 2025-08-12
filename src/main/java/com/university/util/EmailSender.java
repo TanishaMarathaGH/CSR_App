@@ -1,15 +1,14 @@
 package com.university.util;
 
 import javax.mail.*;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
+import javax.mail.internet.*;
 import java.util.Properties;
 
 public class EmailSender {
     private static final String HOST = "smtp.gmail.com";
     private static final String PORT = "587";
-    private static final String USERNAME = "csrmlsu@gmail.com"; // Replace with your email
-    private static final String PASSWORD = "anzuenhzugpcypry"; // Replace with your app password
+    private static final String USERNAME = "your-email@gmail.com"; // Replace with your email
+    private static final String PASSWORD = "your-app-password"; // Replace with your app password
     
     private static Properties getEmailProperties() {
         Properties props = new Properties();
@@ -29,20 +28,21 @@ public class EmailSender {
         });
     }
 
-    public static void sendComplaintStatusUpdate(String recipientEmail, int complaintId, String status) {
+    public static void sendComplaintStatusUpdate(String recipientEmail, String ticketNumber, String status) {
         try {
             Message message = new MimeMessage(getEmailSession());
             message.setFrom(new InternetAddress(USERNAME));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail));
-            message.setSubject("Complaint Status Update - #" + complaintId);
+            message.setSubject("Complaint Status Update - Ticket #" + ticketNumber);
             
             String emailBody = String.format(
-                "Dear Student,\n\n" +
-                "Your complaint (ID: %d) has been updated to status: %s\n\n" +
-                "Please log in to the Campus Service Request System for more details.\n\n" +
+                "Dear User,\n\n" +
+                "Your complaint (Ticket #%s) has been updated.\n\n" +
+                "New Status: %s\n\n" +
+                "Please log in to the Campus Service Request System to view more details.\n\n" +
                 "Best regards,\n" +
                 "Campus Service Request Team",
-                complaintId, status
+                ticketNumber, status
             );
             
             message.setText(emailBody);
@@ -50,34 +50,35 @@ public class EmailSender {
             
         } catch (MessagingException e) {
             e.printStackTrace();
-            // Consider logging this error or handling it appropriately
+            // Log the error but don't throw it to avoid disrupting the main application flow
         }
     }
 
-    public static void sendNewComplaintNotification(String adminEmail, int complaintId, String category) {
+    public static void sendNewComplaintNotification(String adminEmail, String ticketNumber, String category, String priority) {
         try {
             Message message = new MimeMessage(getEmailSession());
             message.setFrom(new InternetAddress(USERNAME));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(adminEmail));
-            message.setSubject("New Complaint Received - #" + complaintId);
+            message.setSubject("New Complaint Received - Ticket #" + ticketNumber);
             
             String emailBody = String.format(
                 "Dear Administrator,\n\n" +
-                "A new complaint has been submitted:\n" +
-                "Complaint ID: %d\n" +
-                "Category: %s\n\n" +
+                "A new complaint has been submitted:\n\n" +
+                "Ticket Number: %s\n" +
+                "Category: %s\n" +
+                "Priority: %s\n\n" +
                 "Please log in to the Campus Service Request System to review and process this complaint.\n\n" +
                 "Best regards,\n" +
                 "Campus Service Request System",
-                complaintId, category
+                ticketNumber, category, priority
             );
             
             message.setText(emailBody);
             Transport.send(message);
-            
+
         } catch (MessagingException e) {
             e.printStackTrace();
-            // Consider logging this error or handling it appropriately
+            // Log the error but don't throw it to avoid disrupting the main application flow
         }
     }
 } 
